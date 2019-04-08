@@ -442,7 +442,7 @@ instead of \"Stashes:\"."
                          (magit-read-stash "Show stash"))
                      (pcase-let ((`(,args ,files) (magit-diff-arguments)))
                        (list (delete "--stat" args) files))))
-  (magit-mode-setup #'magit-stash-mode stash nil args files))
+  (magit-stash-setup-buffer stash args files))
 
 (define-derived-mode magit-stash-mode magit-diff-mode "Magit Stash"
   "Mode for looking at individual stashes."
@@ -450,6 +450,9 @@ instead of \"Stashes:\"."
   (hack-dir-local-variables-non-file-buffer)
   (setq-local bookmark-make-record-function
               #'magit-bookmark--stash-make-record))
+
+(defun magit-stash-setup-buffer (stash args files)
+  (magit-mode-setup #'magit-stash-mode stash nil args files))
 
 (defun magit-stash-refresh-buffer (stash _const _args _files)
   (magit-set-header-line-format
