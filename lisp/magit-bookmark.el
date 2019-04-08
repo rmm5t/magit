@@ -174,8 +174,8 @@ specifies additional properties to store in the bookmark."
   "Handle a Magit reflog BOOKMARK."
   (magit-bookmark--jump bookmark
     (lambda ()
-      (magit-git-reflog (bookmark-prop-get bookmark 'magit-ref)
-                        (bookmark-prop-get bookmark 'magit-args)))))
+      (magit-reflog-setup-buffer (bookmark-prop-get bookmark 'magit-ref)
+                                 (bookmark-prop-get bookmark 'magit-args)))))
 
 (defun magit-bookmark--reflog-make-name (ref _args)
   "Generate the default name for a reflog bookmark."
