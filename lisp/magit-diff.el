@@ -1716,9 +1716,8 @@ Staging and applying changes is documented in info node
 
 (defun magit-diff-setup-buffer (rev-or-range const args files &optional locked)
   (require 'magit)
-  (magit-mode-setup-internal #'magit-diff-mode
-                             (list rev-or-range const args files)
-                             locked))
+  (magit-setup-buffer #'magit-diff-mode locked
+    (magit-refresh-args (list rev-or-range const args files))))
 
 (defun magit-diff-refresh-buffer (rev-or-range const _args files)
   "Refresh the current `magit-diff-mode' buffer.
@@ -2124,7 +2123,8 @@ Staging and applying changes is documented in info node
               'magit-bookmark--revision-make-record))
 
 (defun magit-revision-setup-buffer (rev args files)
-  (magit-mode-setup #'magit-revision-mode rev nil args files))
+  (magit-setup-buffer #'magit-revision-mode nil
+    (magit-refresh-args (list rev nil args files))))
 
 (defun magit-revision-refresh-buffer (rev __const _args files)
   (magit-set-header-line-format
@@ -2426,7 +2426,8 @@ or a ref which is not a branch, then it inserts nothing."
   (hack-dir-local-variables-non-file-buffer))
 
 (defun magit-merge-preview-setup-buffer (rev)
-  (magit-mode-setup #'magit-merge-preview-mode rev))
+  (magit-setup-buffer #'magit-merge-preview-mode nil
+    (magit-refresh-args (list rev))))
 
 (defun magit-merge-preview-refresh-buffer (rev)
   (let* ((branch (magit-get-current-branch))

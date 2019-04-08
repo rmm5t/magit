@@ -452,7 +452,8 @@ instead of \"Stashes:\"."
               #'magit-bookmark--stash-make-record))
 
 (defun magit-stash-setup-buffer (stash args files)
-  (magit-mode-setup #'magit-stash-mode stash nil args files))
+  (magit-setup-buffer #'magit-stash-mode nil
+    (magit-refresh-args (list stash nil args files))))
 
 (defun magit-stash-refresh-buffer (stash _const _args _files)
   (magit-set-header-line-format
