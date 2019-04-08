@@ -95,7 +95,7 @@ specifies additional properties to store in the bookmark."
                   (cons (oref it type)
                         (if (derived-mode-p 'magit-stash-mode)
                             (replace-regexp-in-string
-                             (regexp-quote (car magit-refresh-args))
+                             (regexp-quote magit-buffer-revision)
                              magit-buffer-revision-hash
                              (oref it value))
                           (oref it value))))
@@ -327,13 +327,13 @@ specifies additional properties to store in the bookmark."
     (bookmark-prop-get bookmark 'magit-args)
     (bookmark-prop-get bookmark 'magit-files)))
 
-(defun magit-bookmark--stash-make-name (stash _args files)
+(defun magit-bookmark--stash-make-name ()
   "Generate the default name for a stash bookmark."
   (concat (buffer-name) " "
           magit-buffer-revision-hash " "
-          (if files
-              (mapconcat #'identity files " ")
-            (magit-rev-format "%s" stash))))
+          (if magit-buffer-diff-files
+              (mapconcat #'identity magit-buffer-diff-files " ")
+            (magit-rev-format "%s" magit-buffer-revision))))
 
 ;;;###autoload
 (defun magit-bookmark--stash-make-record ()
@@ -341,10 +341,10 @@ specifies additional properties to store in the bookmark."
   (magit-bookmark--make-record 'magit-stash-mode
     #'magit-bookmark--stash-jump
     #'magit-bookmark--stash-make-name
-    (lambda (_stash _ args files)
+    (lambda (&rest _)
       `((magit-stash . ,magit-buffer-revision-hash)
-        (magit-args  . ,args)
-        (magit-files . ,files)))))
+        (magit-args  . ,magit-buffer-diff-args)
+        (magit-files . ,magit-buffer-diff-files)))))
 
 ;;; Submodules
 
