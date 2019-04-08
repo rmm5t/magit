@@ -279,7 +279,7 @@ specifies additional properties to store in the bookmark."
   (magit-bookmark--make-record 'magit-diff-mode
     #'magit-bookmark--diff-jump
     #'magit-bookmark--diff-make-name
-    (lambda (&rest _)
+    (lambda ()
       `((magit-rev-or-range . ,(magit-bookmark--resolve magit-buffer-range))
         (magit-const        . ,magit-buffer-typearg)
         (magit-args         . ,magit-buffer-diff-args)
@@ -310,7 +310,7 @@ specifies additional properties to store in the bookmark."
   (magit-bookmark--make-record 'magit-revision-mode
     #'magit-bookmark--revision-jump
     #'magit-bookmark--revision-make-name
-    (lambda (&rest _)
+    (lambda ()
       `((magit-rev   . ,magit-buffer-revision-hash)
         (magit-args  . ,magit-buffer-diff-args)
         (magit-files . ,magit-buffer-diff-files)))))
@@ -339,7 +339,7 @@ specifies additional properties to store in the bookmark."
   (magit-bookmark--make-record 'magit-stash-mode
     #'magit-bookmark--stash-jump
     #'magit-bookmark--stash-make-name
-    (lambda (&rest _)
+    (lambda ()
       `((magit-stash . ,magit-buffer-revision-hash)
         (magit-args  . ,magit-buffer-diff-args)
         (magit-files . ,magit-buffer-diff-files)))))
