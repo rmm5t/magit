@@ -304,8 +304,6 @@ Type \\[magit-reset] to reset `HEAD' to the commit at point.
 
 (defun magit-refs-refresh-buffer (ref &optional args)
   (setq magit-set-buffer-margin-refresh (not (magit-buffer-margin-p)))
-  (unless ref
-    (setq ref "HEAD"))
   (unless (magit-rev-verify ref)
     (setq magit-refs-show-commit-count nil))
   (magit-set-header-line-format
@@ -316,7 +314,7 @@ Type \\[magit-reset] to reset `HEAD' to the commit at point.
 
 (cl-defmethod magit-buffer-value (&context (major-mode magit-refs-mode))
   (pcase-let ((`(,ref ,args) magit-refresh-args))
-    (cons (or ref "HEAD") args)))
+    (cons ref args)))
 
 ;;; Commands
 
@@ -342,7 +340,7 @@ Type \\[magit-reset] to reset `HEAD' to the commit at point.
                          current-prefix-arg)))
   (if transient
       (transient-setup 'magit-show-refs)
-    (magit-refs-setup-buffer nil (magit-show-refs-arguments))))
+    (magit-refs-setup-buffer "HEAD" (magit-show-refs-arguments))))
 
 (defun magit-show-refs-arguments ()
   (cond ((eq current-transient-command 'magit-show-refs)
@@ -381,7 +379,7 @@ Type \\[magit-reset] to reset `HEAD' to the commit at point.
   "List and compare references in a dedicated buffer.
 Compared with `HEAD'."
   (interactive (list (magit-show-refs-arguments)))
-  (magit-refs-setup-buffer nil args))
+  (magit-refs-setup-buffer "HEAD" args))
 
 ;;;###autoload
 (defun magit-show-refs-current (&optional args)
@@ -695,9 +693,7 @@ line is inserted at all."
                 (eq magit-refs-show-commit-count 'all)
               magit-refs-show-commit-count)
             (pcase-let ((`(,behind ,ahead)
-                         (magit-rev-diff-count
-                          (or (car magit-refresh-args) "HEAD")
-                          ref)))
+                         (magit-rev-diff-count (car magit-refresh-args) ref)))
               (propertize
                (cond ((> ahead  0) (concat "<" (number-to-string ahead)))
                      ((> behind 0) (concat (number-to-string behind) ">"))
@@ -726,7 +722,7 @@ line is inserted at all."
           (magit-insert-section--current nil))
       (magit-git-wash (apply-partially 'magit-log-wash-log 'cherry)
         "cherry" "-v" (magit-abbrev-arg)
-        (or (car magit-refresh-args) "HEAD")
+        (car magit-refresh-args)
         ref)
       (if (= (point) start)
           (message "No cherries for %s" ref)
