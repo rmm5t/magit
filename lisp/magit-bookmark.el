@@ -113,7 +113,7 @@ specifies additional properties to store in the bookmark."
 (defun magit-bookmark--status-jump (bookmark)
   "Handle a Magit status BOOKMARK."
   (magit-bookmark--jump bookmark
-    (lambda () (magit-status-internal default-directory))))
+    (lambda () (magit-status-setup-buffer default-directory))))
 
 ;;;###autoload
 (defun magit-bookmark--status-make-record ()
