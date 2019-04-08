@@ -417,7 +417,7 @@ instead of \"Stashes:\"."
   (setq-local bookmark-make-record-function
               #'magit-bookmark--stashes-make-record))
 
-(cl-defun magit-stashes-refresh-buffer (ref)
+(defun magit-stashes-refresh-buffer (ref)
   (magit-insert-section (stashesbuf)
     (magit-insert-heading (if (equal ref "refs/stash")
                               "Stashes:"
