@@ -135,9 +135,9 @@ specifies additional properties to store in the bookmark."
   "Create a Magit refs bookmark."
   (magit-bookmark--make-record 'magit-refs-mode
     #'magit-bookmark--refs-jump nil
-    (lambda (refs args)
-      `((magit-refs . ,refs)
-        (magit-args . ,args)))))
+    (lambda ()
+      `((magit-refs . ,magit-buffer-revision)
+        (magit-args . ,magit-buffer-arguments)))))
 
 ;;; Log
 
