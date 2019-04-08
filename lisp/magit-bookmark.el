@@ -262,16 +262,16 @@ specifies additional properties to store in the bookmark."
     (_
      rev-or-range)))
 
-(defun magit-bookmark--diff-make-name (rev-or-range const _args files)
+(defun magit-bookmark--diff-make-name ()
   "Generate a default name for a diff bookmark."
-  (if (member "--no-index" const)
-      (apply #'format "*magit-diff %s %s" files)
+  (if (equal magit-buffer-typearg "--no-index")
+      (apply #'format "*magit-diff %s %s" magit-buffer-diff-files)
     (concat (buffer-name) " "
-            (cond ((magit-bookmark--resolve rev-or-range))
-                  ((member "--cached" const) "staged")
-                  (t                       "unstaged"))
-            (and files
-                 (concat " in " (mapconcat #'identity files ", "))))))
+            (cond ((magit-bookmark--resolve magit-buffer-range))
+                  ((equal magit-buffer-typearg "--cached") "staged")
+                  (t "unstaged"))
+            (and magit-buffer-diff-files
+                 (concat " in " (mapconcat #'identity magit-buffer-diff-files ", "))))))
 
 ;;;###autoload
 (defun magit-bookmark--diff-make-record ()
@@ -279,11 +279,11 @@ specifies additional properties to store in the bookmark."
   (magit-bookmark--make-record 'magit-diff-mode
     #'magit-bookmark--diff-jump
     #'magit-bookmark--diff-make-name
-    (lambda (rev-or-range const args files)
-      `((magit-rev-or-range . ,(magit-bookmark--resolve rev-or-range))
-        (magit-const        . ,const)
-        (magit-args         . ,args)
-        (magit-files        . ,files)))))
+    (lambda (&rest _)
+      `((magit-rev-or-range . ,(magit-bookmark--resolve magit-buffer-range))
+        (magit-const        . ,magit-buffer-typearg)
+        (magit-args         . ,magit-buffer-diff-args)
+        (magit-files        . ,magit-buffer-diff-files)))))
 
 ;;; Revision
 
