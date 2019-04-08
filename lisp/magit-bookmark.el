@@ -295,27 +295,25 @@ specifies additional properties to store in the bookmark."
     (bookmark-prop-get bookmark 'magit-args)
     (bookmark-prop-get bookmark 'magit-files)))
 
-(defun magit-bookmark--revision-make-name (_rev _ _args files)
+(defun magit-bookmark--revision-make-name ()
   "Generate a default name for a revision bookmark."
   (concat (buffer-name) " "
           (magit-rev-abbrev magit-buffer-revision)
-          (if files
-              (concat " " (mapconcat #'identity files " "))
+          (if magit-buffer-diff-files
+              (concat " " (mapconcat #'identity magit-buffer-diff-files " "))
             (when-let ((subject (magit-rev-format "%s" magit-buffer-revision)))
               (concat " " subject)))))
 
 ;;;###autoload
 (defun magit-bookmark--revision-make-record ()
   "Create a Magit revision bookmark."
-  ;; magit-refresh-args stores the revision in relative form.
-  ;; For bookmarks, the exact hash is more appropriate.
   (magit-bookmark--make-record 'magit-revision-mode
     #'magit-bookmark--revision-jump
     #'magit-bookmark--revision-make-name
-    (lambda (_rev _ args files)
+    (lambda (&rest _)
       `((magit-rev   . ,magit-buffer-revision-hash)
-        (magit-args  . ,args)
-        (magit-files . ,files)))))
+        (magit-args  . ,magit-buffer-diff-args)
+        (magit-files . ,magit-buffer-diff-files)))))
 
 ;;; Stash
 
