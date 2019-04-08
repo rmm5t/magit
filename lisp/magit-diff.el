@@ -1165,7 +1165,7 @@ for a revision."
             (expand-file-name (file-name-as-directory module))))
     (unless (magit-commit-p rev)
       (user-error "%s is not a commit" rev))
-    (magit-mode-setup #'magit-revision-mode rev nil args files)))
+    (magit-revision-setup-buffer rev args files)))
 
 ;;;; Setting commands
 
@@ -2108,6 +2108,9 @@ Staging and applying changes is documented in info node
   :group 'magit-revision
   (hack-dir-local-variables-non-file-buffer)
   )
+
+(defun magit-revision-setup-buffer (rev args files)
+  (magit-mode-setup #'magit-revision-mode rev nil args files))
 
 (defun magit-revision-refresh-buffer (rev __const _args files)
   (magit-set-header-line-format
