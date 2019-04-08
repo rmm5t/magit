@@ -631,6 +631,17 @@ Magit is documented in info node `(magit)'."
 (defvar-local magit-buffer-file-name nil)
 (put 'magit-buffer-file-name 'permanent-local t)
 
+(defvar-local magit-buffer-arguments nil)
+(defvar-local magit-buffer-revisions nil)
+(defvar-local magit-buffer-range nil)
+(defvar-local magit-buffer-upstream nil)
+(defvar-local magit-buffer-typearg nil)
+(defvar-local magit-buffer-files nil)
+(defvar-local magit-buffer-diff-args nil)
+(defvar-local magit-buffer-diff-files nil)
+(defvar-local magit-buffer-log-args nil)
+(defvar-local magit-buffer-log-files nil)
+
 (defvar-local magit-previous-section nil)
 (put 'magit-previous-section 'permanent-local t)
 
