@@ -234,7 +234,7 @@ specifies additional properties to store in the bookmark."
 ;;;###autoload
 (defun magit-bookmark--diff-jump (bookmark)
   "Handle a Magit diff BOOKMARK."
-  (magit-bookmark--jump bookmark #'magit-diff-setup
+  (magit-bookmark--jump bookmark #'magit-diff-setup-buffer
     (bookmark-prop-get bookmark 'magit-rev-or-range)
     (bookmark-prop-get bookmark 'magit-const)
     (bookmark-prop-get bookmark 'magit-args)
