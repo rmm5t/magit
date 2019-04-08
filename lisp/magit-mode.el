@@ -615,10 +615,6 @@ Magit is documented in info node `(magit)'."
 
 ;;; Local Variables
 
-(defvar-local magit-refresh-args nil
-  "The arguments used to refresh the current buffer.")
-(put 'magit-refresh-args 'permanent-local t)
-
 (defvar-local magit-buffer-revision nil)
 (put 'magit-buffer-revision 'permanent-local t)
 
@@ -641,6 +637,12 @@ Magit is documented in info node `(magit)'."
 (defvar-local magit-buffer-diff-files nil)
 (defvar-local magit-buffer-log-args nil)
 (defvar-local magit-buffer-log-files nil)
+
+(defvar-local magit-refresh-args nil
+  "Obsolete.  Possibly the arguments used to refresh the current buffer.
+Some third-party packages might still use this, but Magit does not.")
+(put 'magit-refresh-args 'permanent-local t)
+(make-obsolete-variable 'magit-refresh-args nil "Magit 2.91.0")
 
 (defvar-local magit-previous-section nil)
 (put 'magit-previous-section 'permanent-local t)
@@ -696,7 +698,8 @@ locked to its value, which is derived from MODE and ARGS."
   (declare (obsolete magit-setup-buffer "Magit 2.91.0"))
   (let* ((value   (and locked
                        (with-temp-buffer
-                         (setq magit-refresh-args args)
+                         (with-no-warnings
+                           (setq magit-refresh-args args))
                          (let ((major-mode mode))
                            (magit-buffer-value)))))
          (buffer  (magit-mode-get-buffer mode nil nil value))
@@ -707,7 +710,8 @@ locked to its value, which is derived from MODE and ARGS."
                      (magit-generate-new-buffer mode value))))
     (with-current-buffer buffer
       (setq magit-previous-section section)
-      (setq magit-refresh-args args)
+      (with-no-warnings
+        (setq magit-refresh-args args))
       (funcall mode)
       (magit-xref-setup 'magit-mode-setup-internal args)
       (when created
@@ -995,7 +999,7 @@ your mode instead of adding an entry to this variable.")
 
 (cl-defgeneric magit-buffer-value ()
   (when-let ((fn (cdr (assq major-mode magit-buffer-lock-functions))))
-    (funcall fn magit-refresh-args)))
+    (funcall fn (with-no-warnings magit-refresh-args))))
 
 ;;; Bury Buffer
 
@@ -1119,7 +1123,7 @@ Run hooks `magit-pre-refresh-hook' and `magit-post-refresh-hook'."
         (let ((inhibit-read-only t))
           (erase-buffer)
           (save-excursion
-            (apply refresh magit-refresh-args)))
+            (apply refresh (with-no-warnings magit-refresh-args))))
         (dolist (window windows)
           (with-selected-window (car window)
             (with-current-buffer buffer
