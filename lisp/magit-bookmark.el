@@ -213,9 +213,10 @@ specifies additional properties to store in the bookmark."
     (bookmark-prop-get bookmark 'magit-head)
     (bookmark-prop-get bookmark 'magit-upstream)))
 
-(defun magit-bookmark--cherry-make-name (upstream head)
+(defun magit-bookmark--cherry-make-name ()
   "Generate the default name for a cherry bookmark."
-  (concat (buffer-name) " " head " upstream " upstream))
+  (concat (buffer-name) " " magit-buffer-refname
+          " upstream " magit-buffer-upstream))
 
 ;;;###autoload
 (defun magit-bookmark--cherry-make-record ()
@@ -223,9 +224,9 @@ specifies additional properties to store in the bookmark."
   (magit-bookmark--make-record 'magit-cherry-mode
     #'magit-bookmark--cherry-jump
     #'magit-bookmark--cherry-make-name
-    (lambda (upstream head)
-      `((magit-head     . ,head)
-        (magit-upstream . ,upstream)))))
+    (lambda ()
+      `((magit-head     . ,magit-buffer-refname)
+        (magit-upstream . ,magit-buffer-upstream)))))
 
 ;;; Diff
 
