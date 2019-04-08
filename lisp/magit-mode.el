@@ -619,6 +619,18 @@ Magit is documented in info node `(magit)'."
   "The arguments used to refresh the current buffer.")
 (put 'magit-refresh-args 'permanent-local t)
 
+(defvar-local magit-buffer-revision nil)
+(put 'magit-buffer-revision 'permanent-local t)
+
+(defvar-local magit-buffer-revision-hash nil)
+(put 'magit-buffer-revision-hash 'permanent-local t)
+
+(defvar-local magit-buffer-refname nil)
+(put 'magit-buffer-refname 'permanent-local t)
+
+(defvar-local magit-buffer-file-name nil)
+(put 'magit-buffer-file-name 'permanent-local t)
+
 (defvar-local magit-previous-section nil)
 (put 'magit-previous-section 'permanent-local t)
 
