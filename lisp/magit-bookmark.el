@@ -177,9 +177,9 @@ specifies additional properties to store in the bookmark."
       (magit-reflog-setup-buffer (bookmark-prop-get bookmark 'magit-ref)
                                  (bookmark-prop-get bookmark 'magit-args)))))
 
-(defun magit-bookmark--reflog-make-name (ref _args)
+(defun magit-bookmark--reflog-make-name ()
   "Generate the default name for a reflog bookmark."
-  (concat (buffer-name) " " ref))
+  (concat (buffer-name) " " magit-buffer-refname))
 
 ;;;###autoload
 (defun magit-bookmark--reflog-make-record ()
@@ -187,9 +187,9 @@ specifies additional properties to store in the bookmark."
   (magit-bookmark--make-record 'magit-reflog-mode
     #'magit-bookmark--reflog-jump
     #'magit-bookmark--reflog-make-name
-    (lambda (ref args)
-      `((magit-ref  . ,ref)
-        (magit-args . ,args)))))
+    (lambda ()
+      `((magit-ref  . ,magit-buffer-refname)
+        (magit-args . ,magit-buffer-log-args)))))
 
 ;;; Stashes
 
