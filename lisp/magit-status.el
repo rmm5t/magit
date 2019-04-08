@@ -340,7 +340,9 @@ Type \\[magit-commit] to create a commit.
 (defun magit-status-setup-buffer (directory)
   (magit--tramp-asserts directory)
   (let ((default-directory directory))
-    (magit-setup-buffer #'magit-status-mode)))
+    (magit-setup-buffer #'magit-status-mode nil
+      (magit-buffer-diff-args
+       (magit-diff--initial-section-args 'magit-status-mode)))))
 
 (defun magit-status-refresh-buffer ()
   (magit-git-exit-code "update-index" "--refresh")
@@ -427,15 +429,15 @@ the status buffer causes this section to disappear again."
   "Insert a header line showing the effective diff filters."
   (let ((ignore-modules (magit-ignore-submodules-p)))
     (when (or ignore-modules
-              magit-diff-section-file-args)
+              magit-buffer-diff-files)
       (insert (propertize (format "%-10s" "Filter! ")
                           'face 'magit-section-heading))
       (when ignore-modules
         (insert ignore-modules)
-        (when magit-diff-section-file-args
+        (when magit-buffer-diff-files
           (insert " -- ")))
-      (when magit-diff-section-file-args
-        (insert (mapconcat #'identity magit-diff-section-file-args " ")))
+      (when magit-buffer-diff-files
+        (insert (mapconcat #'identity magit-buffer-diff-files " ")))
       (insert ?\n))))
 
 ;;;; Reference Headers
@@ -612,11 +614,11 @@ Note that even if the value is `all', Magit still initially
 only shows directories.  But the directory sections can then
 be expanded using \"TAB\".
 
-If the first element of `magit-diff-section-file-args' is a
+If the first element of `magit-buffer-diff-files' is a
 directory, then limit the list to files below that.  The value
 value of that variable can be set using \"D -- DIRECTORY RET g\"."
   (let* ((show (or (magit-get "status.showUntrackedFiles") "normal"))
-         (base (car magit-diff-section-file-args))
+         (base (car magit-buffer-diff-files))
          (base (and base (file-directory-p base) base)))
     (unless (equal show "no")
       (if (equal show "all")
@@ -643,11 +645,11 @@ value of that variable can be set using \"D -- DIRECTORY RET g\"."
 (defun magit-insert-tracked-files ()
   "Insert a tree of tracked files.
 
-If the first element of `magit-diff-section-file-args' is a
+If the first element of `magit-buffer-diff-files' is a
 directory, then limit the list to files below that.  The value
 value of that variable can be set using \"D -- DIRECTORY RET g\"."
   (when-let ((files (magit-list-files)))
-    (let* ((base (car magit-diff-section-file-args))
+    (let* ((base (car magit-buffer-diff-files))
            (base (and base (file-directory-p base) base)))
       (magit-insert-section (tracked nil t)
         (magit-insert-heading "Tracked files:")
@@ -657,11 +659,11 @@ value of that variable can be set using \"D -- DIRECTORY RET g\"."
 (defun magit-insert-ignored-files ()
   "Insert a tree of ignored files.
 
-If the first element of `magit-diff-section-file-args' is a
+If the first element of `magit-buffer-diff-files' is a
 directory, then limit the list to files below that.  The value
 of that variable can be set using \"D -- DIRECTORY RET g\"."
   (when-let ((files (magit-ignored-files)))
-    (let* ((base (car magit-diff-section-file-args))
+    (let* ((base (car magit-buffer-diff-files))
            (base (and base (file-directory-p base) base)))
       (magit-insert-section (tracked nil t)
         (magit-insert-heading "Ignored files:")
@@ -671,11 +673,11 @@ of that variable can be set using \"D -- DIRECTORY RET g\"."
 (defun magit-insert-skip-worktree-files ()
   "Insert a tree of skip-worktree files.
 
-If the first element of `magit-diff-section-file-args' is a
+If the first element of `magit-buffer-diff-files' is a
 directory, then limit the list to files below that.  The value
 of that variable can be set using \"D -- DIRECTORY RET g\"."
   (when-let ((files (magit-skip-worktree-files)))
-    (let* ((base (car magit-diff-section-file-args))
+    (let* ((base (car magit-buffer-diff-files))
            (base (and base (file-directory-p base) base)))
       (magit-insert-section (skip-worktree nil t)
         (magit-insert-heading "Skip-worktree files:")
