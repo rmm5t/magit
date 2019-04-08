@@ -299,6 +299,9 @@ Type \\[magit-reset] to reset `HEAD' to the commit at point.
         #'magit-imenu--refs-create-index-function)
   )
 
+(defun magit-refs-setup-buffer (ref args)
+  (magit-mode-setup #'magit-refs-mode ref args))
+
 (defun magit-refs-refresh-buffer (ref &optional args)
   (setq magit-set-buffer-margin-refresh (not (magit-buffer-margin-p)))
   (unless ref
@@ -335,7 +338,7 @@ Type \\[magit-reset] to reset `HEAD' to the commit at point.
                          current-prefix-arg)))
   (if transient
       (transient-setup 'magit-show-refs)
-    (magit-mode-setup #'magit-refs-mode nil (magit-show-refs-arguments))))
+    (magit-refs-setup-buffer nil (magit-show-refs-arguments))))
 
 (defun magit-show-refs-arguments ()
   (cond ((eq current-transient-command 'magit-show-refs)
@@ -374,14 +377,14 @@ Type \\[magit-reset] to reset `HEAD' to the commit at point.
   "List and compare references in a dedicated buffer.
 Compared with `HEAD'."
   (interactive (list (magit-show-refs-arguments)))
-  (magit-mode-setup #'magit-refs-mode nil args))
+  (magit-refs-setup-buffer nil args))
 
 ;;;###autoload
 (defun magit-show-refs-current (&optional args)
   "List and compare references in a dedicated buffer.
 Compare with the current branch or `HEAD' if it is detached."
   (interactive (list (magit-show-refs-arguments)))
-  (magit-mode-setup #'magit-refs-mode (magit-get-current-branch) args))
+  (magit-refs-setup-buffer (magit-get-current-branch) args))
 
 ;;;###autoload
 (defun magit-show-refs-other (&optional ref args)
@@ -389,7 +392,7 @@ Compare with the current branch or `HEAD' if it is detached."
 Compared with a branch read from the user."
   (interactive (list (magit-read-other-branch "Compare with")
                      (magit-show-refs-arguments)))
-  (magit-mode-setup #'magit-refs-mode ref args))
+  (magit-refs-setup-buffer ref args))
 
 (defun magit-refs-set-show-commit-count ()
   "Change for which refs the commit count is shown."
@@ -417,8 +420,7 @@ different, but only if you have customized the option
       (let ((ref (oref (magit-current-section) value)))
         (cond (current-prefix-arg
                (cond ((memq 'focus-on-ref magit-visit-ref-behavior)
-                      (magit-mode-setup #'magit-refs-mode ref
-                                        (magit-show-refs-arguments)))
+                      (magit-refs-setup-buffer ref (magit-show-refs-arguments)))
                      (magit-visit-ref-behavior
                       ;; Don't prompt for commit to visit.
                       (let ((current-prefix-arg nil))
