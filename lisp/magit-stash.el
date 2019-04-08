@@ -408,7 +408,7 @@ instead of \"Stashes:\"."
 (defun magit-stash-list ()
   "List all stashes in a buffer."
   (interactive)
-  (magit-mode-setup #'magit-stashes-mode "refs/stash"))
+  (magit-stashes-setup-buffer))
 
 (define-derived-mode magit-stashes-mode magit-reflog-mode "Magit Stashes"
   "Mode for looking at lists of stashes."
@@ -416,6 +416,9 @@ instead of \"Stashes:\"."
   (hack-dir-local-variables-non-file-buffer)
   (setq-local bookmark-make-record-function
               #'magit-bookmark--stashes-make-record))
+
+(defun magit-stashes-setup-buffer ()
+  (magit-setup-buffer #'magit-stashes-mode))
 
 (defun magit-stashes-refresh-buffer (ref)
   (magit-insert-section (stashesbuf)
