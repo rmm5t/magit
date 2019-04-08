@@ -149,12 +149,13 @@ specifies additional properties to store in the bookmark."
     (bookmark-prop-get bookmark 'magit-args)
     (bookmark-prop-get bookmark 'magit-files)))
 
-(defun magit-bookmark--log-make-name (revs _args files)
+(defun magit-bookmark--log-make-name ()
   "Generate the default name for a log bookmark."
   (concat (buffer-name) " "
-          (mapconcat #'identity revs " ")
-          (and files
-               (concat " touching " (mapconcat #'identity files " ")))))
+          (mapconcat #'identity magit-buffer-revisions " ")
+          (and magit-buffer-log-files
+               (concat " touching "
+                       (mapconcat #'identity magit-buffer-log-files " ")))))
 
 ;;;###autoload
 (defun magit-bookmark--log-make-record ()
@@ -162,10 +163,10 @@ specifies additional properties to store in the bookmark."
   (magit-bookmark--make-record 'magit-log-mode
     #'magit-bookmark--log-jump
     #'magit-bookmark--log-make-name
-    (lambda (revs args files)
-      `((magit-revs  . ,revs)
-        (magit-args  . ,args)
-        (magit-files . ,files)))))
+    (lambda ()
+      `((magit-revs  . ,magit-buffer-revisions)
+        (magit-args  . ,magit-buffer-log-args)
+        (magit-files . ,magit-buffer-log-files)))))
 
 ;;; Reflog
 
