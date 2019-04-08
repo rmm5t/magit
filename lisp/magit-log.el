@@ -939,9 +939,9 @@ Type \\[magit-reset] to reset `HEAD' to the commit at point.
   (setq-local bookmark-make-record-function
               'magit-bookmark--log-make-record))
 
-(defun magit-log-setup-buffer (revs args files)
+(defun magit-log-setup-buffer (revs args files &optional locked)
   (require 'magit)
-  (magit-mode-setup #'magit-log-mode revs args files)
+  (magit-mode-setup-internal #'magit-log-mode (list revs args files) locked)
   (magit-log-goto-same-commit))
 
 (defun magit-log-refresh-buffer (revs args files)
