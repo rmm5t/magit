@@ -80,9 +80,9 @@ buffer.
 NAME, if non-nil, is used as the name of the bookmark.
 
 MAKE-PROPS should be either nil or a function that will be called
-with `magit-refresh-args' as the argument list, and may return an
-alist whose every element has the form (PROP . VALUE) and
-specifies additional properties to store in the bookmark."
+with no arguments, and may return an alist whose every element
+has the form (PROP . VALUE) and specifies additional properties
+to store in the bookmark."
   (declare (indent 1))
   (unless (eq major-mode mode)
     (user-error "Not in a %s buffer" mode))
@@ -103,7 +103,7 @@ specifies additional properties to store in the bookmark."
     (when name
       (bookmark-prop-set bookmark 'defaults (list name)))
     (when make-props
-      (pcase-dolist (`(,prop . ,value) (apply make-props magit-refresh-args))
+      (pcase-dolist (`(,prop . ,value) (funcall make-props))
         (bookmark-prop-set bookmark prop value)))
     bookmark))
 
