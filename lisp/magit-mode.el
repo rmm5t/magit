@@ -556,7 +556,30 @@ Magit is documented in info node `(magit)'."
   (when (and (fboundp 'display-line-numbers-mode)
              (bound-and-true-p global-display-line-numbers-mode))
     (display-line-numbers-mode -1))
-  (add-hook 'kill-buffer-hook 'magit-preserve-section-visibility-cache))
+  (add-hook 'kill-buffer-hook 'magit-preserve-section-visibility-cache)
+  (setq-local bookmark-make-record-function 'magit--make-bookmark))
+
+(defun magit--make-bookmark ()
+  (if magit-buffer-bookmark-variables
+      (let ((bookmark (bookmark-make-record-default 'no-file)))
+        (bookmark-prop-set bookmark 'handler   'magit--handle-hookmark)
+        (bookmark-prop-set bookmark 'mode      major-mode)
+        (bookmark-prop-set bookmark 'filename  (magit-toplevel))
+        (bookmark-prop-set bookmark 'defaults  (list (buffer-name)))
+        (bookmark-prop-set bookmark 'variables magit-buffer-bookmark-variables)
+        (dolist (var magit-buffer-bookmark-variables)
+          (bookmark-prop-set bookmark var (symbol-value var)))
+        bookmark)
+    (user-error "Bookmarking this buffer is not implemented")))
+
+(defun magit--handle-hookmark (bookmark)
+  (let ((default-directory (bookmark-get-filename bookmark)))
+    (apply (intern (format "%s-setup-buffer"
+                           (substring (symbol-name
+                                       (bookmark-prop-get bookmark 'mode))
+                                      0 -5)))
+           (--map (bookmark-prop-get bookmark it)
+                  (bookmark-prop-get bookmark 'variables)))))
 
 ;;; Highlighting
 

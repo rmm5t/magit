@@ -446,7 +446,10 @@ instead of \"Stashes:\"."
   "Mode for looking at individual stashes."
   :group 'magit-diff
   (hack-dir-local-variables-non-file-buffer)
-  )
+  (setq magit-buffer-bookmark-variables
+        '(magit-buffer-revision
+          magit-buffer-diff-args
+          magit-buffer-diff-files)))
 
 (defun magit-stash-setup-buffer (stash args files)
   (magit-setup-buffer #'magit-stash-mode nil
