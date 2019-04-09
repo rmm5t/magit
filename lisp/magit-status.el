@@ -32,8 +32,6 @@
 
 (require 'magit)
 
-(defvar bookmark-make-record-function)
-
 ;;; Options
 
 (defgroup magit-status nil
@@ -342,8 +340,7 @@ Type \\[magit-commit] to create a commit.
   (hack-dir-local-variables-non-file-buffer)
   (setq imenu-create-index-function
         'magit-imenu--status-create-index-function)
-  (setq-local bookmark-make-record-function
-              #'magit-bookmark--status-make-record))
+  )
 
 (defun magit-status-refresh-buffer ()
   (magit-git-exit-code "update-index" "--refresh")
